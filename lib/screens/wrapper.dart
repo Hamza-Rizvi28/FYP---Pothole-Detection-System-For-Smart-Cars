@@ -5,6 +5,8 @@ import 'package:fyp/screens/home/home.dart';
 import 'package:provider/provider.dart';
 
 class Wrapper extends StatelessWidget {
+
+  Wrapper();
   @override
   Widget build(BuildContext context) {
     
