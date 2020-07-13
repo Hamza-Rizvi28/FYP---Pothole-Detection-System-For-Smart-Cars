@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.fyp">
+
+    <!-- Asking permission for tracking GPS Location -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
          In most cases you can leave this as-is, but you if you want to provide
@@ -43,5 +47,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        
+        <!-- GOOGLE MAPS API KEY-->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyA0gnpxGUi6nCT-W8YpefhEFOU8ml0Wt54"/>
     </application>
 </manifest>

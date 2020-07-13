@@ -3,6 +3,10 @@ import 'package:camera/camera.dart';
 import 'package:fyp/services/auth.dart';
 import 'package:tflite/tflite.dart';
 import 'dart:math' as math;
+import 'package:location/location.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import "dart:async";
 
 typedef void Callback(List<dynamic> list, int h, int w);
 
@@ -20,7 +24,12 @@ class Camera extends StatefulWidget {
 class _CameraState extends State<Camera> {
   CameraController controller;
   bool isDetecting = false;
+  bool hasDetected = false;
   final AuthService _auth = AuthService();
+
+  Location location = new Location();
+  Firestore firestore = Firestore.instance;
+  Geoflutterfire geo = Geoflutterfire();
 
   @override
   void initState() {
@@ -30,7 +39,7 @@ class _CameraState extends State<Camera> {
       print('No camera is found');
     } else {
       controller = new CameraController(
-        widget.cameras[1],
+        widget.cameras[0],
         ResolutionPreset.high,
       );
       controller.initialize().then((_) {
@@ -45,8 +54,7 @@ class _CameraState extends State<Camera> {
 
             int startTime = new DateTime.now().millisecondsSinceEpoch;
 
-            //       *** Model predicts here ***
-            // *** Need to call Rest API from here ***
+            //       *** Model predicts from here ***
 
             Tflite.detectObjectOnFrame(
               bytesList: img.planes.map((plane) {
@@ -58,21 +66,42 @@ class _CameraState extends State<Camera> {
               imageMean: 0,
               imageStd: 255.0,
               numResultsPerClass: 1,
-              threshold: 0.1,
-            ).then((recognitions) {
-              int endTime = new DateTime.now().millisecondsSinceEpoch;
-              print("Detection took ${endTime - startTime}");
+              threshold: 0.2,
+            ).then((recognitions) async {
+              if (recognitions.isNotEmpty) {
+                int endTime = new DateTime.now().millisecondsSinceEpoch;
+                print("Detection took ${endTime - startTime}");
+                if (hasDetected == false) {
+                  _addGeoPoint();
+
+                  setState(() {
+                    hasDetected = true;
+                  });
+                } else {
+                  await Future.delayed(Duration(seconds: 2));
+                  setState(() {
+                    hasDetected = false;
+                  });
+                }
+              }
 
               widget.setRecognitions(recognitions, img.height, img.width);
-
               isDetecting = false;
-
-              
             });
           }
         });
       });
     }
+  }
+
+  Future<DocumentReference> _addGeoPoint() async {
+    var pos = await location.getLocation();
+    GeoFirePoint point =
+        geo.point(latitude: pos.latitude, longitude: pos.longitude);
+
+    return firestore
+        .collection('locations')
+        .add({'position': point.data, 'name': 'User location!'});
   }
 
   @override
@@ -133,13 +162,8 @@ class _CameraState extends State<Camera> {
                 : screenW / previewW * previewH,
             maxWidth: screenRatio > previewRatio
                 ? screenH / previewH * previewW
-                : screenW, 
-            //child: CameraPreview(controller),    
-            
-            child: RotationTransition(
-              turns: AlwaysStoppedAnimation(90 / 360),
-              child: CameraPreview(controller),
-            ),
+                : screenW,
+            child: CameraPreview(controller),
           ),
         ],
       ),

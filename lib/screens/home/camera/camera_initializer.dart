@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:tflite/tflite.dart';
 import 'dart:math' as math;
-
 import 'package:fyp/screens/home/camera/camera_service.dart';
 import 'package:fyp/screens/home/camera/bndbox.dart';
-//import 'package:fyp/models.dart';
 
 const String yolo = "Tiny YOLOv2";
 

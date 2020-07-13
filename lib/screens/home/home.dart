@@ -3,9 +3,11 @@ import 'package:fyp/screens/home/camera/camera_initializer.dart';
 import 'package:fyp/services/auth.dart';
 import 'package:camera/camera.dart';
 
+import 'package:fyp/screens/home/map/map_screen.dart';
+
 class Home extends StatelessWidget {
   final AuthService _auth = AuthService();
-                                                                                    
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,22 +27,39 @@ class Home extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: Container(
-          child: IconButton(
-            icon: Icon(Icons.camera_alt),
-            iconSize: 70.0,
-            onPressed: () async {
-              // Obtain a list of the available cameras on the device.
-              final cameraList = await availableCameras();
-
-              //Move to Camera Initialization Screen
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HomePage(cameraList)));
-            },
-          ),
+        child: Row(
           
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 70),
+              child: IconButton(
+                icon: Icon(Icons.camera_alt),
+                iconSize: 70.0,
+                onPressed: () async {
+                  // Obtain a list of the available cameras on the device.
+                  final cameraList = await availableCameras();
+
+                  //Move to Camera Initialization Screen
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(cameraList)));
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: IconButton(
+                icon: Icon(Icons.map),
+                iconSize: 70.0,
+                onPressed: () async {
+                  //Move to Map Screen
+                  await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => MapScreen()));
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
