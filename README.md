@@ -4,9 +4,9 @@ Detects potholes on a live feed and stores the location of the detected potholes
 
 Computer Vision Model: Tiny Yolo v2
 
-## Getting Started
+# Getting Started
 
-# Prerequisites
+## Prerequisites
 
 Following are the prerequisites of the application:
 
@@ -14,7 +14,7 @@ Following are the prerequisites of the application:
 * Java JDK 8.0 or above
 * Flutter and firebase
 
-# Installing
+## Installing
 
 Run the following command:
 
